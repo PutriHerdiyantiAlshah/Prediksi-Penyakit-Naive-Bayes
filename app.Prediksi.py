@@ -114,7 +114,7 @@ def main():
     with st.sidebar:
         st.image("https://cdn-icons-png.flaticon.com/512/4997/4997426.png", width=100)
         st.title("Profil Pasien")
-        nama_pasien = st.text_input("Nama Pasien", placeholder="Mis: Budi Santoso")
+        nama_pasien = st.text_input("Nama Pasien", placeholder="Mis: Zulkidin")
         usia_pasien = st.number_input("Usia Pasien", min_value=0, max_value=120, value=None, placeholder="0")
 
     # --- Halaman Utama ---
@@ -201,5 +201,6 @@ def main():
 # --- Jalankan Aplikasi ---
 if __name__ == "__main__":
     main()
+
 
 
