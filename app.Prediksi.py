@@ -5,7 +5,7 @@ import pickle
 # --- 1. Konfigurasi Halaman & Judul ---
 # Ini harus menjadi perintah Streamlit pertama
 st.set_page_config(
-    page_title="Form Diagnosa Profesional",
+    page_title="Form Prediksi Penyakit",
     page_icon="🩺",
     layout="centered",
     initial_sidebar_state="expanded"
@@ -78,7 +78,7 @@ def load_resources():
 
 # --- 4. Fungsi Tampilan Hasil ---
 def display_result(disease_name):
-    """Menampilkan hasil diagnosa dengan UI cantik."""
+    """Menampilkan hasil diagnosa"""
     
     # Ambil info dari kamus, gunakan DEFAULT jika tidak ketemu
     info = DISEASE_INFO.get(disease_name, DISEASE_INFO["DEFAULT"])
@@ -112,13 +112,13 @@ def main():
 
     # --- SIDEBAR: Input Profil Pasien ---
     with st.sidebar:
-        st.image("https://cdn-icons-png.flaticon.com/512/2927/2927818.png", width=100)
+        st.image("https://share.google/images/uzslxnTLAewZ1xWLl", width=100)
         st.title("Profil Pasien")
         nama_pasien = st.text_input("Nama Pasien", placeholder="Mis: Budi Santoso")
         usia_pasien = st.number_input("Usia Pasien", min_value=0, max_value=120, value=None, placeholder="0")
 
     # --- Halaman Utama ---
-    st.title("🩺 Form Diagnosa Profesional")
+    st.title("🩺 Form Prediksi Penyakit")
     st.write(f"Harap isi gejala untuk pasien: **{nama_pasien if nama_pasien else '...'}**")
 
     # Inisialisasi session state untuk menyimpan hasil
@@ -201,3 +201,4 @@ def main():
 # --- Jalankan Aplikasi ---
 if __name__ == "__main__":
     main()
+
