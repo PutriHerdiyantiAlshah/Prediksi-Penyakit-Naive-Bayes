@@ -101,7 +101,7 @@ def display_result(disease_name):
     st.subheader("Deskripsi Singkat")
     st.write(description)
     st.markdown("---")
-    st.caption("**Peringatan:** Ini adalah prediksi berdasarkan model AI dan **bukan** diagnosis medis profesional. Silakan berkonsultasi dengan dokter.")
+    st.caption("**Peringatan:** Ini adalah prediksi berdasarkan model Naive Bayes menggunakan data buatan dan dikombinasikan dengan AI **bukan** diagnosis medis profesional. Silakan berkonsultasi dengan dokter.")
 
 
 # --- 5. Fungsi Utama Aplikasi ---
@@ -201,6 +201,7 @@ def main():
 # --- Jalankan Aplikasi ---
 if __name__ == "__main__":
     main()
+
 
 
 
