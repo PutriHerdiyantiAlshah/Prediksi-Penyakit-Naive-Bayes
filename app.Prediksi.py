@@ -8,10 +8,10 @@ st.set_page_config(
     page_title="Form Prediksi Penyakit",
     page_icon="🩺",
     layout="centered",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded"  # Sidebar langsung terbuka
 )
 
-# --- 2. Kamus Penyakit ---
+# --- 2. Kamus Penyakit (Untuk UI Cantik) ---
 # Di sinilah kita mendefinisikan warna, ikon, dan deskripsi
 # Tambahkan/ubah sesuai dengan 'TARGET' di data Anda
 DISEASE_INFO = {
@@ -51,7 +51,7 @@ DISEASE_INFO = {
             "lebih ringan daripada flu, seperti hidung meler dan bersin."
         )
     },
-    # Default jika penyakit tidak ada di kamus
+    # Default jika penyakit tidak ada di kamus (sesuaikan jika perlu)
     "DEFAULT": {
         "color": "black",
         "icon": "❓",
@@ -70,15 +70,18 @@ def load_resources():
         feature_names = pickle.load(open('feature_names.sav', 'rb'))
         return model, class_names, feature_names
     except FileNotFoundError:
-        st.error("Error: File model (.sav) tidak ditemukan.")
-        st.stop()
+        st.error(
+            "Error: File model (.sav) tidak ditemukan. "
+            "Pastikan Anda sudah menjalankan 'buat_model.py' terlebih dahulu."
+        )
+        st.stop()  # Menghentikan eksekusi jika model tidak ada
     except Exception as e:
         st.error(f"Terjadi kesalahan saat memuat model: {e}")
         st.stop()
 
 # --- 4. Fungsi Tampilan Hasil ---
 def display_result(disease_name):
-    """Menampilkan hasil diagnosa"""
+    """Menampilkan hasil diagnosa."""
     
     # Ambil info dari kamus, gunakan DEFAULT jika tidak ketemu
     info = DISEASE_INFO.get(disease_name, DISEASE_INFO["DEFAULT"])
@@ -95,13 +98,18 @@ def display_result(disease_name):
     elif color == "blue":
         st.info(f"**{icon} Hasil Prediksi: {disease_name}**", icon=icon)
     else:
+        # Warna lain (gray, black, dll) akan menggunakan st.success
         st.success(f"**{icon} Hasil Prediksi: {disease_name}**", icon=icon)
 
     # Tampilkan deskripsi
     st.subheader("Deskripsi Singkat")
     st.write(description)
     st.markdown("---")
-    st.caption("**Peringatan:** Ini adalah prediksi berdasarkan model Naive Bayes menggunakan data buatan dan dikombinasikan dengan AI **bukan** diagnosis medis profesional. Silakan berkonsultasi dengan dokter.")
+    st.caption(
+        "**Peringatan:** Ini adalah prediksi berdasarkan model Naive Bayesian dan AI "
+        "**bukan** diagnosis medis profesional. Silakan berkonsultasi "
+        "dengan dokter untuk kepastian."
+    )
 
 
 # --- 5. Fungsi Utama Aplikasi ---
@@ -115,13 +123,16 @@ def main():
         st.image("https://cdn-icons-png.flaticon.com/512/4997/4997426.png", width=150)
         st.title("Profil Pasien")
         nama_pasien = st.text_input("Nama Pasien", placeholder="contoh: Zulkidin")
-        usia_pasien = st.number_input("Usia Pasien", min_value=0, max_value=120, value=None, placeholder="0")
+        usia_pasien = st.number_input(
+            "Usia Pasien", min_value=0, max_value=120, value=None, placeholder="Tahun..."
+        )
 
     # --- Halaman Utama ---
-    st.title("🩺 Form Prediksi Penyakit")
+    st.title("🩺 Form Diagnosa Profesional")
     st.write(f"Harap isi gejala untuk pasien: **{nama_pasien if nama_pasien else '...'}**")
 
     # Inisialisasi session state untuk menyimpan hasil
+    # Ini PENTING untuk tombol reset
     if 'prediction' not in st.session_state:
         st.session_state.prediction = None
     if 'patient_name_display' not in st.session_state:
@@ -162,25 +173,35 @@ def main():
         # --- Tombol Submit dan Reset ---
         submit_col, reset_col = st.columns([3, 1]) # Tombol submit lebih besar
         
-        submitted = submit_col.form_submit_button("🚀 Prediksi Penyakit", use_container_width=True, type="primary")
-        reset_pressed = reset_col.form_submit_button("Reset", use_container_width=True)
+        submitted = submit_col.form_submit_button(
+            "🚀 Prediksi Penyakit", 
+            use_container_width=True, 
+            type="primary"
+        )
+        reset_pressed = reset_col.form_submit_button(
+            "Reset", 
+            use_container_width=True
+        )
 
     # --- Logika Setelah Form disubmit ---
     if submitted:
         # Validasi input
-        if not nama_pasien or usia_pasien == 0:
+        if not nama_pasien or usia_pasien is None or usia_pasien == 0:
             st.warning("Mohon isi Nama dan Usia Pasien di sidebar terlebih dahulu.")
         elif sum(user_input_list) == 0:
             st.warning("Anda tidak memilih gejala apapun. Silakan pilih minimal satu gejala.")
         else:
             # Lakukan prediksi
-            input_array = np.array(user_input_list).reshape(1, -1)
-            prediction_index = model.predict(input_array)
-            disease_name = class_names[prediction_index[0]]
-            
-            # Simpan hasil ke session state
-            st.session_state.prediction = disease_name
-            st.session_state.patient_name_display = nama_pasien
+            try:
+                input_array = np.array(user_input_list).reshape(1, -1)
+                prediction_index = model.predict(input_array)
+                disease_name = class_names[prediction_index[0]]
+                
+                # Simpan hasil ke session state
+                st.session_state.prediction = disease_name
+                st.session_state.patient_name_display = nama_pasien
+            except Exception as e:
+                st.error(f"Terjadi kesalahan saat prediksi: {e}")
 
     # Jika tombol reset ditekan, bersihkan hasil
     if reset_pressed:
@@ -201,9 +222,3 @@ def main():
 # --- Jalankan Aplikasi ---
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
