@@ -128,7 +128,7 @@ def main():
         )
 
     # --- Halaman Utama ---
-    st.title("🩺 Form Diagnosa Profesional")
+    st.title("🩺 Form Prediksi Penyakit")
     st.write(f"Harap isi gejala untuk pasien: **{nama_pasien if nama_pasien else '...'}**")
 
     # Inisialisasi session state untuk menyimpan hasil
@@ -222,3 +222,4 @@ def main():
 # --- Jalankan Aplikasi ---
 if __name__ == "__main__":
     main()
+
